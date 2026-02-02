@@ -68,6 +68,7 @@ client.on("messageCreate", async (message) => {
 
   await handleAutoModeration(message, config);
 
+
   const now = Date.now();
   const cooldownMs = config.xpCooldownSeconds * 1000;
   const lastMessage = getCooldown(message.author.id);
