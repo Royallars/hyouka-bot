@@ -1,0 +1,21 @@
+{
+  "name": "hyouka-bot",
+  "version": "1.0.0",
+  "description": "Discord.js bot with auto moderation, welcome banners, and music features",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "deploy": "node src/deploy-commands.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.17.0",
+    "@napi-rs/canvas": "^0.1.59",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "ytdl-core": "^4.11.5"
+  }
+}
