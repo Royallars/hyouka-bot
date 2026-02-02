@@ -6,7 +6,6 @@ const { handleAutoModeration } = require("./features/autoModeration");
 const { assignAutoRole } = require("./features/autoRole");
 const { sendWelcomeBanner } = require("./features/welcomeBanner");
 const { addXp, getCooldown, setCooldown } = require("./leveling/store");
-const { clearAfk, getAfk } = require("./afk/store");
 
 if (!config.token || !config.clientId) {
   throw new Error("Missing DISCORD_TOKEN or DISCORD_CLIENT_ID in environment.");
@@ -69,20 +68,6 @@ client.on("messageCreate", async (message) => {
 
   await handleAutoModeration(message, config);
 
-  const afk = getAfk(message.author.id);
-  if (afk) {
-    clearAfk(message.author.id);
-    await message.channel.send(`Welcome back ${message.author}! I cleared your AFK status.`);
-  }
-
-  for (const mention of message.mentions.users.values()) {
-    const mentionedAfk = getAfk(mention.id);
-    if (mentionedAfk) {
-      await message.channel.send(
-        `${mention.tag} is AFK: ${mentionedAfk.reason}`,
-      );
-    }
-  }
 
   const now = Date.now();
   const cooldownMs = config.xpCooldownSeconds * 1000;

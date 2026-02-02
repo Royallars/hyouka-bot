@@ -96,11 +96,6 @@ npm start
 - `/rank`: Shows a user's level and XP.
 - `/xpleaderboard`: Displays the XP leaderboard.
 - `/setxp`: Sets a user's XP (requires Manage Server).
-- `/afk`: Set your AFK status.
-- `/channelinfo`: Shows information about a channel.
-- `/roleinfo`: Shows information about a role.
-- `/membercount`: Displays the member count.
-- `/servericon`: Shows the server icon.
 
 ## Economy Commands
 
