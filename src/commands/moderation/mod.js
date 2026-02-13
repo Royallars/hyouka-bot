@@ -5,6 +5,24 @@ const {
   SlashCommandBuilder,
 } = require('discord.js');
 const { sendModLog } = require('../../features/modLog');
+
+const SUB_PERMISSIONS = {
+  ban: PermissionFlagsBits.BanMembers,
+  unban: PermissionFlagsBits.BanMembers,
+  softban: PermissionFlagsBits.BanMembers,
+  kick: PermissionFlagsBits.KickMembers,
+  timeout: PermissionFlagsBits.ModerateMembers,
+  untimeout: PermissionFlagsBits.ModerateMembers,
+  purge: PermissionFlagsBits.ManageMessages,
+  lock: PermissionFlagsBits.ManageChannels,
+  unlock: PermissionFlagsBits.ManageChannels,
+  move: PermissionFlagsBits.MoveMembers,
+  deafen: PermissionFlagsBits.DeafenMembers,
+  undeafen: PermissionFlagsBits.DeafenMembers,
+  slowmode: PermissionFlagsBits.ManageChannels,
+  nick: PermissionFlagsBits.ManageNicknames,
+};
+
 const {
   addNote,
   addWarning,
@@ -80,6 +98,12 @@ module.exports = {
   async execute(interaction) {
     const subGroup = interaction.options.getSubcommandGroup(false);
     const sub = interaction.options.getSubcommand();
+
+    const neededPerm = SUB_PERMISSIONS[subGroup || sub];
+    if (neededPerm && !interaction.member.permissions.has(neededPerm)) {
+      await interaction.reply({ content: 'Fehlende Berechtigung für diesen Subcommand.', ephemeral: true });
+      return;
+    }
 
     const createActionCase = async (type, targetId, reason) => {
       const item = createCase(interaction.guildId, {
