@@ -26,6 +26,7 @@ const config = {
   xpGainMax: Number(process.env.XP_GAIN_MAX || 25),
   xpCooldownSeconds: Number(process.env.XP_COOLDOWN_SECONDS || 30),
   suggestionsChannelId: process.env.SUGGESTIONS_CHANNEL_ID || null,
+  ownerId: process.env.OWNER_ID || null,
 };
 
 module.exports = { config };

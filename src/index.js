@@ -6,6 +6,7 @@ const { handleAutoModeration } = require("./features/autoModeration");
 const { assignAutoRole } = require("./features/autoRole");
 const { sendWelcomeBanner } = require("./features/welcomeBanner");
 const { addXp, getCooldown, setCooldown } = require("./leveling/store");
+const { canRunCommand } = require('./command-utils');
 
 if (!config.token || !config.clientId) {
   throw new Error("Missing DISCORD_TOKEN or DISCORD_CLIENT_ID in environment.");
@@ -87,6 +88,18 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("interactionCreate", async (interaction) => {
+  if (interaction.isAutocomplete()) {
+    const command = client.commands.get(interaction.commandName);
+    if (command?.autocomplete) {
+      try {
+        await command.autocomplete(interaction);
+      } catch {
+        await interaction.respond([]);
+      }
+    }
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) {
     return;
   }
@@ -97,6 +110,12 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   try {
+    const guard = await canRunCommand(interaction, command);
+    if (!guard.ok) {
+      await interaction.reply({ content: guard.reason, ephemeral: guard.ephemeral ?? true });
+      return;
+    }
+
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
