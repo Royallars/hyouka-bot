@@ -80,4 +80,13 @@ Löschen/Reset:
 - `DISCORD_TOKEN`
 - `DISCORD_CLIENT_ID`
 - `OWNER_ID` (für `/eval`)
+- `BOT_STATUS_TEXT` (default: `/help`)
+- `BOT_STATUS_TYPE` (`PLAYING|WATCHING|LISTENING|STREAMING|COMPETING|CUSTOM`)
+- `BOT_STATUS_ONLINE` (`online|idle|dnd|invisible`)
 - plus weitere Variablen in `src/config.js`
+
+
+## Node 25 Hinweis
+
+- Der Bot nutzt `clientReady` statt `ready` (Discord.js v15-kompatibel).
+- DEP0180-Warnings werden klar geloggt, damit problematische Dependencies identifizierbar bleiben.

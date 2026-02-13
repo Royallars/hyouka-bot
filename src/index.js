@@ -1,12 +1,20 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
+const { ActivityType, Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
 const { config } = require("./config");
 const { handleAutoModeration } = require("./features/autoModeration");
 const { assignAutoRole } = require("./features/autoRole");
 const { sendWelcomeBanner } = require("./features/welcomeBanner");
 const { addXp, getCooldown, setCooldown } = require("./leveling/store");
 const { canRunCommand } = require('./command-utils');
+
+process.on("warning", (warning) => {
+  if (warning.code === "DEP0180") {
+    console.warn("DEP0180 warning detected (likely dependency under Node 25):", warning.message);
+    return;
+  }
+  console.warn(warning);
+});
 
 if (!config.token || !config.clientId) {
   throw new Error("Missing DISCORD_TOKEN or DISCORD_CLIENT_ID in environment.");
@@ -53,8 +61,23 @@ for (const file of commandFiles) {
   }
 }
 
-client.once("ready", () => {
+const activityTypeMap = {
+  PLAYING: ActivityType.Playing,
+  STREAMING: ActivityType.Streaming,
+  LISTENING: ActivityType.Listening,
+  WATCHING: ActivityType.Watching,
+  COMPETING: ActivityType.Competing,
+  CUSTOM: ActivityType.Custom,
+};
+
+client.once("clientReady", () => {
+  const type = activityTypeMap[config.statusType] || ActivityType.Watching;
+  client.user.setPresence({
+    activities: [{ name: config.statusText, type }],
+    status: config.statusOnline,
+  });
   console.log(`Logged in as ${client.user.tag}`);
+  console.log(`Presence set: ${config.statusType} ${config.statusText} (${config.statusOnline})`);
 });
 
 client.on("guildMemberAdd", async (member) => {
